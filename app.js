@@ -6,9 +6,13 @@ const bodyParser = require('body-parser');
 const csrf = require('host-csrf');
 const cookieParser = require('cookie-parser')
 const passport = require('passport');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const path = require('path');
 const passportInit = require('./passport/passportInit');
+const groceriesRouter = require('./routes/groceries.js')
 
 require('express-async-errors');
 require('dotenv').config();
@@ -54,6 +58,14 @@ const csrf_options = {
   };
 
 app.use(csrf(csrf_options));
+app.use(xss());
+app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
 
 app.use(session(sessionParams));
 passportInit();
@@ -62,7 +74,7 @@ app.use(passport.session());
 app.use(flash());
 
 const secretWordRouter = require("./routes/secretWord");
-const auth = require("./middleware/auth");
+const authMiddleware = require('./middleware/auth');
 app.use("/secretWord", auth, secretWordRouter);
 
 app.use(require('./middleware/storeLocals'));
@@ -72,7 +84,7 @@ app.get('/', (req, res) => {
 });
 
 
-
+app.use('/groceries', groceriesRouter, authMiddleware)
 app.use('/sessions', require('./routes/sessionRoutes'));
 
 

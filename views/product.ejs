@@ -1,0 +1,26 @@
+<form <% if (!product) {
+    %>action="/groceries"<%
+} else {
+    >% action="/groceries/update/<%= product.id %>" <%
+} %> method="post">
+    <form>
+        <div>
+          <label for="name">name:</label>
+          <input type="text" id="productName" />
+        </div>
+        <div>
+            <label for="addedby">Added by:</label>
+            <input type="text" id="addedby">
+        </div>
+        <div>
+          <label for="status">status:</label>
+          <select id="status">
+            <option value="pending">pending</option>
+            <option value="bought">bought</option>
+            <option value="not found">not found</option>
+          </select>
+        </div>
+        <button type="button" id="adding-product">add</button>
+        <button type="button" id="edit-cancel">cancel</button>
+      </form>
+</form>
