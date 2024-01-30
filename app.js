@@ -75,7 +75,7 @@ app.use(flash());
 
 const secretWordRouter = require("./routes/secretWord");
 const authMiddleware = require('./middleware/auth');
-app.use("/secretWord", auth, secretWordRouter);
+app.use("/secretWord", authMiddleware, secretWordRouter);
 
 app.use(require('./middleware/storeLocals'));
 

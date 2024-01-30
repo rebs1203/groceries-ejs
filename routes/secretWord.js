@@ -9,7 +9,7 @@ router.get("/",  (req, res) => {
 
     res.locals.info = req.flash('info') || [];
     res.locals.errors = req.flash('error') || [];
-    res.render('secretWord', { secretWord: req.session.secretWord });
+    res.render('secretWord', { secretWord: req.session.secretWord, user: req.user });
 
 });
 

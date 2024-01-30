@@ -12,10 +12,12 @@
   <div>
     <label name="password">Enter your password:</label>
     <input type="password" name="password" />
+    <input type="hidden" name="_csrf" value="<%= _csrf %>">
   </div>
   <div>
     <label name="password1">Confirm your password:</label>
     <input type="password" name="password1" />
+    <input type="hidden" name="_csrf" value="<%= _csrf %>">
   </div>
   <div>
     <button>Register</button>
