@@ -3,6 +3,7 @@ const router = express.Router()
 
 const {
     getAllGroceries,
+    newProduct,
     addProduct,
     getProduct,
     updateProduct,
@@ -10,8 +11,8 @@ const {
 } = require('../controllers/groceries.js')
 
 router.route('/').get(getAllGroceries).post(addProduct)
-router.route('/new').get(getProduct)
-router.route('/update/:id').post(updateProduct)
+router.route('/new').get(newProduct)
+router.route('/update/:id').get(getProduct).post(updateProduct)
 router.route('/delete/:id').post(deleteProduct)
 
 module.exports = router

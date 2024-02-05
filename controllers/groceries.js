@@ -2,11 +2,30 @@ const Groceries = require('../models/Groceries.js')
 
 const getAllGroceries = async (req, res) => {
     try {
-        res.status(200).json({ groceries: Groceries });
+        const groceries = await Groceries.find({ createdBy: req.user.id }).sort("createdAt");
+        res.render("groceries", { groceries });
     } catch (error) {
         res.status(500).json({error})
     }
 }
+
+const newProduct = async (req, res) => {
+    const {
+        body: { name, status }
+    } = req;
+    if (!name || !status) {
+        req.flash("error", "Name or Status fields cannot be empty.");
+        res.redirect("/groceries/new"); 
+    } else {
+        const newProduct = {
+                name: name,
+                createdBy: req.user._id,
+                status: status
+        }
+        Groceries.create(newProduct)
+        res.redirect("/groceries")
+    }
+};
 
 const addProduct = (req, res) => {
     res.render("product", { product: null })
@@ -27,55 +46,61 @@ const getProduct = async (req, res) => {
 
     try {
         const product = await Groceries.findById(id)
-        res.status(200).json({product})
+        if(!product) {
+            req.flash('error', 'Product not found')
+            res.redirect("/groceries");     
+        }
+        res.render("product", { product })
     } catch (error) {
-        res.status(404).json({msg: 'Id not found'})
-        req.flash('error', 'Id not found')
+        req.flash('error', 'Undefined error')
+        res.redirect("/groceries");
     }
 }
 
-const updateProduct = (req, res) => {
-    const id = req.params.id
-
+const updateProduct = async (req, res) => {
     try {
-        let product = Groceries.findById(id)
+        const id = req.params.id
+        const updatedProduct = {
+            name: req.body.name || product.name,
+            status: req.body.status || product.status
+        }
+        let product = await Groceries.findByIdAndUpdate({_id: id}, updatedProduct, { new: true, runValidators: true });
 
         if (!product) {
-            res.status(404).json({msg: 'Id not found'})
-            req.flash('error', 'Id not found')
+            req.flash('error', 'Product not found')
+            res.redirect("/groceries"); 
         }
-
-        const updatedProduct = {
-            name: req.body.name || existingProduct.name,
-            addedby: existingProduct.addedby,
-            status: req.body.status || existingProduct.status
-        }
-
-        product = updatedProduct
-        res.status(200).json({product})
+        res.redirect("/groceries")
     } catch (error) {
-        res.status(500).json({error})
+        req.flash('error', 'Undefined error')
+        res.redirect("/groceries"); 
     }
 }
 
-const deleteProduct = (req, res) => {
+const deleteProduct = async (req, res) => {
     try {
         const id = req.params.id
         if (!id) {
             req.flash('error', 'Please provide Id')
+            res.render("groceries",{errors: req.flash("error")}); 
         }
-        Groceries.findByIdAndDelete(id)
+        const product = await Groceries.findByIdAndDelete(id)
+        if (!product) {
+            req.flash('error', 'Product not found')
+            res.render("groceries",{errors: req.flash("error")}); 
+        }
         
-        res.status(200).json({msg: 'Item deleted'})
+        res.redirect("/groceries"); 
     } catch (error) {
-        res.status(404).json({msg: 'Id not found'})
-        req.flash('error', 'Id not found')
+        req.flash('error', 'Undefined error')
+        res.render("groceries",{errors: req.flash("error")}); 
     }
 }
 
 
 module.exports = {
     getAllGroceries,
+    newProduct,
     addProduct,
     getProduct,
     updateProduct,
