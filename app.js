@@ -55,6 +55,7 @@ const csrf_options = {
     protected_operations: ["POST","PATCH", "PUT"],
     protected_content_types: ["application/x-www-form-urlencoded", "application/json"],
     development_mode: csrf_development_mode,
+    header_name: "csrf-token",
   };
 
 app.use(csrf(csrf_options));
