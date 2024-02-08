@@ -9,11 +9,11 @@
       </tr>
       <% if (groceries && groceries.length) { %>
         <% groceries.forEach((product) => { %>
-        <tr>
-            <td colspan="2">
-            <td><%= product.name %></td>
-            <td><%= product.status %></td>
             <a href="/groceries/update/<%= product.id %>"><button type="button">edit</button></a>
+            <tr>
+                <td><%= product.name %></td>
+                <td><%= product.status %></td>
+                <td colspan="2">
             <form method="POST" action="/groceries/delete/<%= product.id %>" style="display: inline">
                 <button>delete</button>
                 <input type="hidden" name="_csrf" value="<%= _csrf %>" />
@@ -22,8 +22,8 @@
         </tr>
         <% }) %>
       <% } %>
-        <a href="/groceries/new">
-        <button type="button">create new product</button>
-        </a>
     </table>
+    <a href="/groceries/new">
+    <button type="button">create new product</button>
+    </a>
 <%- include("partials/footer.ejs") %>

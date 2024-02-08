@@ -52,8 +52,8 @@ if (app.get('env') === 'production') {
 }
 
 const csrf_options = {
-    protected_operations: ["PATCH"],
-    protected_content_types: ["application/json"],
+    protected_operations: ["POST","PATCH", "PUT"],
+    protected_content_types: ["application/x-www-form-urlencoded", "application/json"],
     development_mode: csrf_development_mode,
   };
 
@@ -84,7 +84,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/groceries', groceriesRouter, authMiddleware)
+app.use('/groceries', groceriesRouter ,authMiddleware)
 app.use('/sessions', require('./routes/sessionRoutes'));
 
 

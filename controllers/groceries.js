@@ -5,11 +5,17 @@ const getAllGroceries = async (req, res) => {
         const groceries = await Groceries.find({ createdBy: req.user.id }).sort("createdAt");
         res.render("groceries", { groceries });
     } catch (error) {
-        res.status(500).json({error})
+        req.flash('error', 'Undefined error')
+        res.redirect("/"); 
     }
 }
 
+    
 const newProduct = async (req, res) => {
+    res.render("product", { product: null })
+};
+
+const addProduct = (req, res) => {
     const {
         body: { name, status }
     } = req;
@@ -24,20 +30,6 @@ const newProduct = async (req, res) => {
         }
         Groceries.create(newProduct)
         res.redirect("/groceries")
-    }
-};
-
-const addProduct = (req, res) => {
-    res.render("product", { product: null })
-    const product = req.body
-    if(product) {
-        const newProduct = {
-            name: req.body.name,
-            addedby: req.user._id,
-            status: req.body.status
-        }
-        Groceries.push(newProduct)
-        res.json({groceries: Groceries})
     }
 }
 
