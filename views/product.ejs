@@ -1,0 +1,40 @@
+<%- include("partials/head.ejs") %>
+<%- include("partials/header.ejs") %>
+<% if (!product) {%>
+  <form action="/groceries" method="POST">
+        <div>
+          <label for="name">name:</label>
+          <input name="name" type="text" id="productName" />
+        </div>
+        <div>
+          <label for="status">status:</label>
+          <select name="status" id="status">
+            <option value="pending">pending</option>
+            <option value="bought">bought</option>
+            <option value="not found">not found</option>
+          </select>
+        </div>
+        <button type="submit">add</button>
+        <a href="/groceries"><button type="button">cancel</button></a> 
+        <input type="hidden" name="_csrf" value="<%= _csrf %>">
+  </form>
+<% } else { %>
+  <form action="/groceries/update/<%= product.id %>"  method="POST">
+    <div>
+      <label for="name">name:</label>
+      <input name="name" type="text" id="productName" value="<%=product.name%>" />
+    </div>
+    <div>
+      <label for="status">status:</label>
+      <select name="status" id="status" value="<%=product.status%>">
+        <option value="pending">pending</option>
+        <option value="bought">bought</option>
+        <option value="not found">not found</option>
+      </select>
+    </div>
+    <button type="submit">edit</button>
+    <a href="/groceries"><button type="button">cancel</button></a> 
+    <input type="hidden" name="_csrf" value="<%= _csrf %>">
+  </form>
+<%} %>
+<%- include("partials/footer.ejs") %>
